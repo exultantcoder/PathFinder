@@ -1,65 +1,414 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export default function Home() {
+
+  const [question, setQuestion] =
+    useState("");
+  
+  const [image, setImage] =
+    useState<File | null>(null);
+
+  const [answer, setAnswer] =
+    useState<any>(null);
+
+  const [selectedOption, setSelectedOption] =
+    useState("");
+
+  const [result, setResult] =
+    useState("");
+
+  const [answered, setAnswered] =
+    useState(false);
+
+  const [loading, setLoading] =
+    useState(false);
+  
+  const [speaking, setSpeaking] =
+  useState(false);
+
+  const signIn = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+    });
+  };
+  const startListening = () => {
+
+  const recognition =
+    new (window as any)
+    .webkitSpeechRecognition();
+
+  recognition.lang = "en-US";
+
+  recognition.onresult = (
+    event: any
+  ) => {
+
+    setQuestion(
+      event.results[0][0].transcript
+    );
+  };
+
+  recognition.start();
+};
+  const askAI = async () => {
+
+    setLoading(true);
+
+    setAnswered(false);
+
+    setResult("");
+
+    setSelectedOption("");
+
+    setAnswer(null);
+
+    try {
+
+      const formData = new FormData();
+
+      formData.append(
+        "question",
+          question
+      );
+
+      formData.append(
+        "email",
+        "aarav.gupta1@gemmaedu.com"
+      );
+
+      if (image) {
+
+        formData.append(
+         "image",
+          image
+      );
+    }
+
+const response = await fetch(
+  "http://127.0.0.1:8000/ask",
+  {
+    method: "POST",
+    body: formData,
+  }
+);
+
+      const data = await response.json();
+
+      setAnswer(data);
+      const utterance =
+        new SpeechSynthesisUtterance(
+          data.explanation
+        );
+
+      utterance.onstart = () =>
+        setSpeaking(true);
+
+      utterance.onend = () =>
+        setSpeaking(false);
+
+      speechSynthesis.speak(
+        utterance
+      );
+
+    } catch (error) {
+
+      setResult(
+        "❌ Failed to get response."
+      );
+
+    } finally {
+
+      setLoading(false);
+    }
+  };
+  const checkAnswer = (
+    option: string,
+    index: number
+  ) => {
+
+    if (answered) return;
+
+    setAnswered(true);
+
+    setSelectedOption(option);
+
+    const correct =
+  answer?.quiz?.correct_answer;
+
+const letters =
+  ["A", "B", "C", "D"];
+
+const selectedLetter =
+  letters[index];
+
+let correctOption = correct;
+
+if (letters.includes(correct)) {
+
+  const correctIndex =
+    letters.indexOf(correct);
+
+  correctOption =
+    answer?.quiz?.options?.[
+      correctIndex
+    ];
+}
+
+const isCorrect =
+
+  selectedLetter === correct ||
+
+  option === correct ||
+
+  option === correctOption;
+
+if (isCorrect) {
+
+  setResult(
+    "✅ Correct Answer!"
+  );
+
+} else {
+
+  setResult(
+    `❌ Wrong. Correct answer is ${correctOption}`
+  );
+}
+
+    fetch(
+      "http://127.0.0.1:8000/submit_quiz",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          student_id:
+            "c0899ba0-3227-4a92-8bac-8da7aea14722",
+
+          quiz_id: answer.quiz_id,
+
+          selected_answer: option,
+
+          is_correct: isCorrect,
+
+          subject: answer.subject,
+
+          score:
+            isCorrect ? 100 : 0,
+        }),
+      }
+    );
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+
+    <main className="min-h-screen bg-black text-white p-6">
+
+      <h1 className="text-4xl font-bold mb-6">
+        Gemma Education Tutor
+      </h1>
+
+      <button
+        onClick={signIn}
+        className="bg-green-500 text-black px-4 py-2 rounded-xl mb-4"
+      >
+        Login with GitHub
+      </button>
+
+      <div className="flex gap-2 mb-6">
+
+        <input
+          value={question}
+          onChange={(e) =>
+            setQuestion(e.target.value)
+          }
+          placeholder="Ask a question..."
+          className="flex-1 p-3 rounded-xl bg-zinc-900"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <input
+          id="image-upload"
+          hidden
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={(e) => 
+            setImage(e.target.files?.[0] || null)
+          }
+          className="mb-4"
+        />
+        <label
+          htmlFor="image-upload"
+          className="bg-purple-500 px-4 py-2 rounded-xl cursor-pointer"
+        >
+          Upload Image
+        </label>
+
+        <button
+          onClick={askAI}
+          disabled={loading}
+          className="bg-white text-black px-5 rounded-xl disabled:opacity-50"
+        >
+          {loading
+            ? "Thinking..."
+            : "Ask"}
+        </button>
+        <button
+          onClick={startListening}
+          className="bg-blue-500 px-4 rounded-xl"
+        >
+          🎤
+        </button>
+        <button
+          onClick={() =>
+            speechSynthesis.pause()
+         }
+          className="bg-yellow-500 px-4 rounded-xl"
+        >
+        ⏸
+        </button>
+
+        <button
+          onClick={() =>
+            speechSynthesis.resume()
+          }
+          className="bg-green-500 px-4 rounded-xl"
+        >
+         ▶
+        </button>
+      </div>
+
+      <div className="bg-zinc-900 p-6 rounded-2xl">
+
+        <h2 className="text-2xl font-bold mb-3">
+          Explanation
+        </h2>
+      <div className="bg-zinc-800 p-4 rounded-xl mb-4">
+
+  <p className="text-sm text-zinc-300">
+    Personalized AI Learning Active
+    
+  </p>
+  {answer?.teacher_notes_used && (
+
+  <div className="mt-2 inline-block bg-blue-600 px-3 py-1 rounded-full text-sm">
+
+    Teacher Material Integrated
+
+  </div>
+)}
+
+  <p className="text-lg font-semibold">
+    Adapting to Weak Topic:
+    {" "}
+    {answer?.weak_topic || "General"}
+  </p>
+<div className="mt-4">
+
+  <div className="flex justify-between mb-1">
+
+    <span>
+      Learning Progress
+    </span>
+
+    <span>
+      {answer?.score || 0}%
+    </span>
+
+  </div>
+
+  <div className="w-full bg-zinc-700 rounded-full h-4">
+
+    <div
+      className="bg-green-500 h-4 rounded-full"
+      style={{
+        width: `${answer?.score || 0}%`
+      }}
+    />
+
+  </div>
+</div>
+</div>
+
+        <p className="mb-6 leading-7">
+          {answer?.explanation}
+        </p>
+
+        <h3 className="text-xl font-semibold mb-2">
+          Follow Up
+        </h3>
+
+        <p className="mb-6">
+          {answer?.follow_up}
+        </p>
+
+        <h3 className="text-xl font-semibold mb-3">
+          Quiz
+        </h3>
+
+        <p className="mb-4 text-lg">
+          {answer?.quiz?.question}
+        </p>
+
+        <div className="flex flex-col gap-3">
+
+          {answer?.quiz?.options?.map(
+            (
+              option: string,
+              index: number
+            ) => (
+
+              <button
+                key={option}
+
+                onClick={() =>
+                  checkAnswer(
+                    option,
+                    index
+                  )
+                }
+
+                disabled={answered}
+
+                className={`p-4 rounded-xl text-left transition-all
+
+                ${
+                  selectedOption === option
+
+                    ? result.includes(
+                        "Correct"
+                      )
+
+                      ? "bg-green-700"
+
+                      : "bg-red-700"
+
+                    : "bg-zinc-800 hover:bg-zinc-700"
+                }
+
+                ${
+                  answered
+                    ? "opacity-90"
+                    : ""
+                }
+                `}
+              >
+                {option}
+              </button>
+            )
+          )}
+
+          <p className="mt-4 text-lg font-semibold">
+            {result}
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
