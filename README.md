@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+PathFinder
+Offline AI-Powered Personalized Education System
 
-## Getting Started
+PathFinder is a multilingual, multimodal educational AI system powered by Gemma 4 and deployed locally on Raspberry Pi using LiteRT-LM.
 
-First, run the development server:
+It enables students to learn through:
 
-```bash
+voice,
+text,
+image uploads,
+adaptive quizzes,
+and personalized educational support.
+
+The system includes:
+
+dedicated dashboards for students and teachers,
+lightweight RAG-based teacher guidance retrieval,
+OCR-based textbook understanding,
+progress tracking,
+and adaptive learning workflows.
+Why PathFinder?
+
+While the world rapidly moves toward artificial intelligence, access to quality education is still difficult for many students due to:
+
+financial limitations,
+infrastructure challenges,
+transportation issues,
+and lack of personalized educational support.
+
+PathFinder was built as a low-cost offline-capable learning system that can continue functioning locally even without continuous internet connectivity after setup.
+
+Technologies Used
+Model
+Gemma 4 E2B Instruct
+Inference Engine
+LiteRT-LM
+Frameworks & Tools
+Next.js
+React
+FastAPI
+Python
+Supabase
+PostgreSQL
+Libraries
+Tesseract OCR
+Pillow (PIL)
+Browser Speech APIs
+Hardware
+Raspberry Pi 5 (4GB)
+USB Microphone
+Webcam
+Speaker
+Portable Display
+Running the Project
+Frontend
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Backend
+cd backend
+source venv/bin/activate
+python main.py
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Conclusion
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+PathFinder is an attempt to make learning more accessible, adaptive, and connected using affordable local AI systems.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
