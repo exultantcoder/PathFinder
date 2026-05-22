@@ -212,7 +212,7 @@ if (isCorrect) {
     <main className="min-h-screen bg-black text-white p-6">
 
       <h1 className="text-4xl font-bold mb-6">
-        Gemma Education Tutor
+        PathFinder
       </h1>
 
       <button
