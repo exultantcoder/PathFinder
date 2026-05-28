@@ -10,7 +10,7 @@ export default function Dashboard() {
   useEffect(() => {
 
     fetch(
-      "http://127.0.0.1:8000/students"
+      "https://ended-untangled-parted.ngrok-free.dev/students"
     )
       .then((res) => res.json())
       .then((data) =>
