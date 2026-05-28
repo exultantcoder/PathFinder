@@ -88,7 +88,7 @@ export default function Home() {
     }
 
 const response = await fetch(
-  "http://127.0.0.1:8000/ask",
+  "https://ended-untangled-parted.ngrok-free.dev/ask",
   {
     method: "POST",
     body: formData,
@@ -179,7 +179,7 @@ if (isCorrect) {
 }
 
     fetch(
-      "http://127.0.0.1:8000/submit_quiz",
+      "https://ended-untangled-parted.ngrok-free.dev/submit_quiz",
       {
         method: "POST",
 
