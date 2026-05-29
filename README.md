@@ -1,6 +1,7 @@
 # PathFinder  
 ### Offline AI-Powered Personalized Education System
 
+Live Demo: https://path-finder-5mgvxy61c-exultantcoders-projects.vercel.app/
 PathFinder is a multilingual, multimodal educational AI system powered by Gemma 4 and deployed locally on Raspberry Pi using LiteRT-LM.
 
 It enables students to learn through:
