@@ -74,6 +74,10 @@ PathFinder was built as a low-cost offline-capable learning system that can cont
 - Teachers monitor student progress through dedicated dashboards
 - Teacher notes retrieved using lightweight RAG workflows
 
+<img width="1759" height="418" alt="Screenshot 2026-06-30 at 11 29 18 AM" src="https://github.com/user-attachments/assets/42b0112f-0b0a-42b9-8882-63449dc103e5" />
+
+<img width="2106" height="1029" alt="Screenshot 2026-06-30 at 11 15 53 AM" src="https://github.com/user-attachments/assets/b8a9da6a-ad2d-4d15-8b66-772c4b257c58" />
+
 ---
 
 ## Running the Project
