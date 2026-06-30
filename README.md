@@ -18,7 +18,9 @@ The system includes:
 - Progress tracking
 - Adaptive learning workflows
 
----
+  
+<img width="1536" height="1024" alt="ChatGPT Image Jun 30, 2026, 11_01_47 AM" src="https://github.com/user-attachments/assets/88f06186-7a75-487e-9b90-cc0fb8b238f3" />
+
 
 ## Why PathFinder?
 
